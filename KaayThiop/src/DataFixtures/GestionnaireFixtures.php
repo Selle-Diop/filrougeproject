@@ -21,7 +21,7 @@ class GestionnaireFixtures extends Fixture
             $gestionnaire = new Gestionnaire();
             $gestionnaire->setNomComplet('Selle'.$i);
             $gestionnaire->setEmail('Selle'.$i.'@gmail.com');
-            $gestionnaire->setRoles(['Gestionnaire']);
+            $gestionnaire->setRoles(['ROLE_Gestionnaire']);
             $gestionnaire->setEtat('1');
             $gestionnaire->setPassword($this->passwordHasher->hashPassword( $gestionnaire,'passer'.$i));
             // $product->setPrice(mt_rand(10, 100));

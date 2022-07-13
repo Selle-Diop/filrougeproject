@@ -22,10 +22,9 @@ class LivreurFixtures extends Fixture
             $livreur = new Livreur();
             $livreur->setNomComplet('NdiayeLivreur'.$i);
             $livreur->setEmail('NdiayeLivreur'.$i.'@gmail.com');
-            $livreur->setRoles(['Livreur']);
+            $livreur->setRoles(['ROLE_Livreur']);
             $matricule='MAT-'.date('dmYhis');
             $livreur->setMatricule($matricule);
-
             $livreur->setEtat('1');
             $livreur->setPassword($this->passwordHasher->hashPassword( $livreur,'livreur'.$i));
             // $product->setPrice(mt_rand(10, 100));
