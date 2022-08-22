@@ -10,10 +10,16 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
-    itemOperations:[
+     collectionOperations:[
         "get"=>[
             "method"=>"get",
             "normalization_context"=>['groups'=> ["livreur"]]
+        ]
+        ],
+    itemOperations:[
+        "get"=>[
+            "method"=>"get",
+            "normalization_context"=>['groups'=> ["livreurI"]]
         ]
     ]
 )]
@@ -22,20 +28,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Livreur extends User
 {
    
-    
+   
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["livreur"])]
+    #[Groups(["livreur","livreurI"])]
     private $matricule;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["livreur"])]
-
+    #[Groups(["livreur","livreurI"])]
     private $telephone;
 
     #[ORM\OneToMany(mappedBy: 'livreur', targetEntity: Livraison::class)]
-    #[Groups(["livreur"])]
-
+    #[Groups(["livreur","livreurI"])]
     private $livraisons;
+    #[ORM\Column(type: 'string', length:50, nullable: true)]
+    #[Groups(["livreur","livreurI"])]
+    private $isEtatLivreur="disponible";
 
     public function __construct()
     {
@@ -61,18 +68,7 @@ class Livreur extends User
         return $this;
     }
 
-    public function isEtat(): ?bool
-    {
-        return $this->etat;
-    }
-
-    public function setEtat(bool $etat): self
-    {
-        $this->etat = $etat;
-
-        return $this;
-    }
-
+  
     public function getTelephone(): ?string
     {
         return $this->telephone;
@@ -111,6 +107,18 @@ class Livreur extends User
                 $livraison->setLivreur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsEtatLivreur(): ?string
+    {
+        return $this->isEtatLivreur;
+    }
+
+    public function setIsEtatLivreur(?string $isEtatLivreur): self
+    {
+        $this->isEtatLivreur = $isEtatLivreur;
 
         return $this;
     }

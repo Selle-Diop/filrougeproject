@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Taille;
 use App\Entity\Produit;
 use Doctrine\ORM\Mapping as ORM;
 use App\DataProvider\ComplementProvider;
@@ -13,7 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     collectionOperations:[
         "get"=>[
             "method"=> "GET",
-            "path"=>"/complement",
+           " normalization_context"=>['groups' => ['complement:read:simple']],
+            
             "srccat"=>ComplementProvider::class
 
         ]  
@@ -26,16 +28,14 @@ class Complement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    
-
     private $id;
-#[Assert\NotBlank(message:"Ce Champ est Obligatoire")]
-    #[ORM\ManyToOne(targetEntity: PortionFrites::class, inversedBy: 'complement')]
-    private $portionFrites;
-#[Assert\NotBlank(message:"Ce Champ est Obligatoire")]
+//  #[Assert\NotBlank(message:"Ce Champ est Obligatoire")]
+//     #[ORM\ManyToOne(targetEntity: PortionFrites::class, inversedBy: 'complement')]
+//     private $portionFrites;
+// #[Assert\NotBlank(message:"Ce Champ est Obligatoire")]
 
-    #[ORM\ManyToOne(targetEntity: Boisson::class, inversedBy: 'complement')]
-    private $boisson;
+//     #[ORM\ManyToOne(targetEntity: Taille::class, inversedBy: 'complement')]
+//     private $taille;
 
     public function getPortionFrites(): ?PortionFrites
     {
@@ -49,14 +49,14 @@ class Complement
         return $this;
     }
 
-    public function getBoisson(): ?Boisson
+    public function getTaille(): ?Taille
     {
-        return $this->boisson;
+        return $this->taille;
     }
 
-    public function setBoisson(?Boisson $boisson): self
+    public function setTaille(?Taille $taille): self
     {
-        $this->boisson = $boisson;
+        $this->taille = $taille;
 
         return $this;
     }

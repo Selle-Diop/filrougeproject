@@ -28,7 +28,7 @@ Class CatalogueProvider implements ContextAwareCollectionDataProviderInterface, 
         // Retrieve the blog post collection from somewhere
         
         $tabcatalogue=[];
-       $tabcatalogue['menu']=$this->menuRepo->findAll();
+        $tabcatalogue['menu']=$this->menuRepo->findAll();
         $tabcatalogue['burger']= $this->repoBurger->findAll();
         return $tabcatalogue;
         // yield new BlogPost(1);

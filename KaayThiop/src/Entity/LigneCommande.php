@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\LigneCommandeRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: LigneCommandeRepository::class)]
 class LigneCommande
@@ -18,17 +21,27 @@ class LigneCommande
     private $prix;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(['commande:read:simple'])]
-
+    #[Groups(['commande:write:simple','commande:simple','client:read','client:readItem'])]
     private $quantite;
 
     #[ORM\ManyToOne(targetEntity: Commande::class, inversedBy: 'ligneCommandes')]
     private $commande;
 
     #[ORM\ManyToOne(targetEntity: Produit::class, inversedBy: 'ligneCommandes')]
-    #[Groups(['commande:read:simple'])]
-
+    #[Groups(['commande:write:simple','commande:simple','client:read','client:readItem'])]
     private $produit;
+
+    #[ORM\OneToMany(mappedBy: 'lignecommande', targetEntity: LigneBT::class,cascade:["persist"])]
+    #[SerializedName("Boissons")]
+    // #[Groups(['commande:write:simple','commande:simple'])]
+    private $ligneBTs;
+
+    public function __construct()
+    {
+        $this->ligneBTs = new ArrayCollection();
+    }
+
+    
 
     public function getId(): ?int
     {
@@ -82,4 +95,36 @@ class LigneCommande
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, LigneBT>
+     */
+    public function getLigneBTs(): Collection
+    {
+        return $this->ligneBTs;
+    }
+
+    public function addLigneBT(LigneBT $ligneBT): self
+    {
+        if (!$this->ligneBTs->contains($ligneBT)) {
+            $this->ligneBTs[] = $ligneBT;
+            $ligneBT->setLignecommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLigneBT(LigneBT $ligneBT): self
+    {
+        if ($this->ligneBTs->removeElement($ligneBT)) {
+            // set the owning side to null (unless already changed)
+            if ($ligneBT->getLignecommande() === $this) {
+                $ligneBT->setLignecommande(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
 }

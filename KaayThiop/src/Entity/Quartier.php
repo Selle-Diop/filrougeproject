@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\QuartierRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\QuartierRepository;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuartierRepository::class)]
 #[ApiResource]
@@ -13,9 +14,13 @@ class Quartier
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+     #[Groups(['zone:read'])]
+
     private $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+     #[Groups(['zone:read'])]
+
     private $nomQuartier;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
@@ -23,6 +28,7 @@ class Quartier
 
     #[ORM\ManyToOne(targetEntity: Zone::class, inversedBy: 'quartiers')]
     private $zone;
+
 
     public function getId(): ?int
     {
@@ -52,6 +58,8 @@ class Quartier
 
         return $this;
     }
+
+    
 
     public function getZone(): ?Zone
     {

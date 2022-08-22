@@ -3,12 +3,30 @@
 namespace App\Entity;
 
 use App\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
-#[ApiResource()]
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+#[ApiResource(
+    collectionOperations:[
+        "get"=>[
+           'normalization_context' => ['groups' => ['client:read']] 
+        ],"post"=>[
+            "method"=>"POST",
+             'denormalization_context' => ['groups' => ['client:write']],
+            
+ 
+        ]
+        ],
+        itemOperations:[
+            "get"=>[
+           'normalization_context' => ['groups' => ['client:readItem']] 
+           ]
+        ]
+
+        )]
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 class Client extends User
@@ -16,11 +34,11 @@ class Client extends User
     
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["livreur"])]
-
+    #[Groups(["livreur",'commande:simple','client:read','client:readItem'])]
     private $telephone;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Commande::class)]
+    #[Groups(['client:read','client:readItem'])]
     private $commandes;
 
     public function __construct()

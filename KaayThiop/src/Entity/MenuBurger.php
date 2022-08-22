@@ -20,14 +20,14 @@ class MenuBurger
     private $id;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-     #[Groups(["menu:simple"])]
+     #[Groups(["menu:simple","menu:read"])]
    #[Assert\Positive(
        message:"la quantite doit etre positive"
    )]
     private $quantite;
 
     #[ORM\ManyToOne(targetEntity: Burger::class, inversedBy: 'menuBurgers',cascade:["persist"])]
-    #[Groups(["menu:simple"])]
+    #[Groups(["menu:simple","menu:read"])]
      private $burgers;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuBurgers')]

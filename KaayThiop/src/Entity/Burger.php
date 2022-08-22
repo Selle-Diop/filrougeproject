@@ -9,6 +9,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: BurgerRepository::class)]
 #[ApiResource(
@@ -27,8 +29,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ],
              'denormalization_context' => ['groups' => ['write']],
             'normalization_context'=> ['groups' => ['burger:read:all','burger:read:simple']],
-             "security"=>"is_granted('ROLE_Gestionnaire')",
-             "security_message"=>"Vous n'avez pas access à cette Ressource"
+            //  "security"=>"is_granted('ROLE_Gestionnaire')",
+            //  "security_message"=>"Vous n'avez pas access à cette Ressource"
         ]
         ],                                                                                                                                                  
     itemOperations:
@@ -48,6 +50,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Burger extends Produit
 {
+    #[Assert\NotBlank(
+        message : "le prix est obligatoire"
+     )]
+    #[Groups(["menu:read"])]
+     
+    protected  $prix;
+
     #[ORM\OneToMany(mappedBy: 'burgers', targetEntity: MenuBurger::class)]
     
     

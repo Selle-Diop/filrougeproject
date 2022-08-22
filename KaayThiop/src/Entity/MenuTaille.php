@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MenuTailleRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: MenuTailleRepository::class)]
 #[ApiResource]
@@ -20,16 +22,18 @@ class MenuTaille
     private $id;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(["menu:simple"])]
+    #[Groups(["menu:simple","menu:read"])]
     
-
+ #[Assert\Positive(
+       message:"la quantite doit etre positive"
+   )]
     private $quantite;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuTailles')]
     private $menus;
 
     #[ORM\ManyToOne(targetEntity: Taille::class, inversedBy: 'menuTailles')]
-    #[Groups(["menu:simple"])]
+    #[Groups(["menu:simple","menu:read"])]
 
     private $tailles;
 

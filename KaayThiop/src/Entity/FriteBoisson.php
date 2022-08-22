@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FriteBoissonRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: FriteBoissonRepository::class)]
 #[ApiResource]
@@ -20,14 +22,18 @@ class FriteBoisson
     private $id;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-     #[Groups(["menu:simple"])]
+     #[Groups(["menu:simple","menu:read",'complement:read:simple'])]
+      #[Assert\Positive(
+       message:"la quantite doit etre positive"
+   )]
+   
     private $quantite;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'friteBoissons',cascade:["persist"])]
     private $menus;
 
     #[ORM\ManyToOne(targetEntity: PortionFrites::class, inversedBy: 'friteBoissons',cascade:["persist"])]
-     #[Groups(["menu:simple"])]
+     #[Groups(["menu:simple","menu:read"])]
     private $fritesportions;
 
     public function getId(): ?int

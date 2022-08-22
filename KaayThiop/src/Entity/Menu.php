@@ -5,20 +5,29 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MenuRepository;
 use App\Controller\Menu2Controller;
+use App\Services\CallBackMenuServices;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 #[ApiResource(
     collectionOperations:[
+        "get"=>[
+            "method"=>"GET",
+            "normalization_context"=>["groups"=>["menu:read"]]
+        ],
         "post"=>[
             "method"=>"POST",
             "denormalization_context"=>["groups"=>["menu:simple"]],
-            "normalization_context"=>["groups"=>["menu:normal"]]
+            "normalization_context"=>["groups"=>["menu:normal"]],
+             'input_formats' => [
+                'multipart' => ['multipart/form-data']
+            ]
 
         ],
         "add"=>[
@@ -28,31 +37,42 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ]
 )]
+#[Assert\Callback([CallBackMenuServices::class, 'validate'])]
 class Menu extends Produit
 {
-    #[Groups(["menu:simple","menu:normal"])]
+    #[Groups(["menu:simple","menu:read"])]
     protected $nom;
-    #[Groups(["menu:simple","menu:normal"])]
+    #[Groups(["menu:simple","menu:read"])]
     protected $prix;
+    // #[Groups(["menu:simple","menu:normal"])]
+    // protected $image;
+   
     #[ORM\OneToMany(mappedBy: 'menus', targetEntity: MenuBurger::class,cascade:["persist"])]
-    #[Groups(["menu:simple"])]
+    #[Groups(["menu:simple","menu:read"])]
     #[SerializedName("Burgers")]
-    #[Assert\NotBlank()]
+    // #[Assert\NotBlank()]
     #[Assert\Valid()]
     #[Assert\Count(
         min:1,
         minMessage:"le menu doit avoir au moins un burger"
     )]
+    // #[ApiSubresource]
+
     private $menuBurgers;
 
     #[ORM\OneToMany(mappedBy: 'menus', targetEntity: MenuTaille::class,cascade:["persist"])]
-    #[Groups(["menu:simple"])]
+    #[Groups(["menu:simple","menu:read"])]
     #[SerializedName("Tailles")]
+    #[Assert\Valid()]
+    // #[ApiSubresource]
     private $menuTailles;
 
     #[ORM\OneToMany(mappedBy: 'menus', targetEntity: FriteBoisson::class,cascade:["persist"])]
-    #[Groups(["menu:simple"])]
+    #[Groups(["menu:simple","menu:read"])]
     #[SerializedName("Frites")]
+    #[Assert\Valid()]
+    // #[ApiSubresource]
+    
     private $friteBoissons;
 
     public function __construct()

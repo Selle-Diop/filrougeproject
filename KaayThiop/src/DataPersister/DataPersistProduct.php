@@ -45,9 +45,7 @@ class DataPersistProduct implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = [])
     {  
-        if ($data instanceof Boisson or $data instanceof PortionFrites){
-            $data->setPrix(0);
-        }elseif ($data instanceof Menu){
+        if ($data instanceof Menu){
             
             foreach ($data->getMenuBurgers() as $MB) {
                $this->prix += $MB->getBurgers()->getPrix()*($MB->getQuantite());
@@ -66,15 +64,24 @@ class DataPersistProduct implements ContextAwareDataPersisterInterface
             }
             // $this->prix-=$this->prix*0.05;
             $data->setPrix($this->prix);
-        }else{
-            $data instanceof Burger;
+            
             $image = stream_get_contents(fopen($data->getFile()->getRealPath(),"rb"));
             
             $data->setImage($image);
 
+
+        }elseif($data instanceof Burger)   {
+              
+            
+            // $image = stream_get_contents(fopen($data->getFile()->getRealPath(),"rb"));
+            $image = $data->getFile();
+            
+            $data->setImage(file_get_contents($image));
+
         }
+       
     
-                // $data->eraseCredentials();
+               
 
         
 

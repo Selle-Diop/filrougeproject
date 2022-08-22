@@ -68,7 +68,7 @@ class Gestionnaire extends User
     public function addCommande(Commande $commande): self
     {
         if (!$this->commandes->contains($commande)) {
-            $this->commandes[] = $commande;
+            $this->commandes[] = $commande; 
             $commande->setGestionnaire($this);
         }
 

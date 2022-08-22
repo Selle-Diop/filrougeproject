@@ -4,6 +4,7 @@
 namespace App\DataProvider;
 
 use App\Entity\Complement;
+use App\Repository\TailleRepository;
 use App\Repository\BoissonRepository;
 use App\Repository\PortionFritesRepository;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
@@ -11,7 +12,7 @@ use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 
 Class ComplementProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    public function __construct(PortionFritesRepository $portions,BoissonRepository $boisson){
+    public function __construct(PortionFritesRepository $portions,TailleRepository $boisson){
         $this->portions = $portions;
         $this->boisson =$boisson;
 
@@ -28,7 +29,7 @@ Class ComplementProvider implements ContextAwareCollectionDataProviderInterface,
         
         $tabcomplement=[];
        $tabcomplement['portion']=$this->portions->findAll();
-        $tabcatalogue['boisson']= $this->boisson->findAll();
+        $tabcomplement['taille']= $this->boisson->findAll();
         return  $tabcomplement;
         // yield new BlogPost(1);
         // yield new BlogPost(2);

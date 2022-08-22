@@ -41,21 +41,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["burger:read:all","write","user:read:simple"])]
-
+    #[Groups(["burger:read:all","write","user:read:simple",'client:read','client:readItem',"livreur","livreurI",'commande:simple'])]
     protected $id;
 
-    #[Groups(["burger:read:all","user:read:simple"])]
+    #[Groups(["burger:read:all","user:read:simple",'commande:simple','client:read','client:readItem'])]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     protected $email;
 
     #[ORM\Column(type: 'json')]
     protected $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string',nullable:true)]
     protected $password;
-    #[Groups(["user:read:simple"])]
 
+    #[Groups(["user:read:simple",'commande:simple','client:read','client:readItem',"livreur","livreurI",'livreur:read'])]
     #[ORM\Column(type: 'string', length: 50)]
     protected $nomComplet;
 

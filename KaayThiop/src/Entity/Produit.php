@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name:"type", type:"string")]
@@ -22,22 +24,26 @@ class Produit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["burger:read:simple","burger:read:all","menu:simple"])]
+    #[Groups(["burger:read:simple","burger:read:all","menu:simple","menu:read",'client:read','client:readItem'])]
 
     protected $id;
 
-    #[Groups(["burger:read:simple","burger:read:all","write"])]
+    #[Groups(["burger:read:simple","burger:read:all","write",'boisson:write','boisson:read',"menu:read","taille:read",'commande:simple','client:read','client:readItem'])]
     #[ORM\Column(type: 'string', length: 50)]
+     #[Assert\NotBlank(
+        message : "le nom est obligatoire"
+     )] 
+
     protected $nom;
 
-    #[Groups(["burger:read:simple","burger:read:all","write"])]
+    #[Groups(["burger:read:simple","burger:read:all","write",'boisson:write','boisson:read',"menu:read",'taille:read','commande:simple','client:read','client:readItem'])]
     #[ORM\Column(type: 'float')]
     protected $prix;
 
     // #[Groups(["burger:read:all"])]
     #[ORM\Column(type: 'boolean')]
     protected $etat=true;
-
+ 
     
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'produit')]
@@ -47,12 +53,13 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: LigneCommande::class)]
     private $ligneCommandes;
 
-    #[Groups(["write"])]
-    #[ORM\Column(type: 'blob')]
+
+    #[Groups(["burger:read:simple","burger:read:all","write",'boisson:write','boisson:read',"menu:read","menu:simple",'client:read','client:readItem'])]
+    #[ORM\Column(type: 'blob',nullable:true)]
     protected  $image;
 
     // #[UploadableField(mapping:"media_object", fileNameProperty:"filePath")]
-     #[Groups(['write'])]
+     #[Groups(['write','boisson:write',"menu:simple","menu:read"])]
     #[UploadableField(mapping:"media_object", fileNameProperty:"filePath")]
     public ?File $file = null;
 
@@ -62,7 +69,7 @@ class Produit
     }
 
 
-    
+
 
     
 
@@ -160,7 +167,13 @@ class Produit
 
     public function getImage()
     {
+        
+       if(is_resource($this->image)){
+        return utf8_encode(base64_encode(stream_get_contents($this->image)));
+       }elseif($this->image){
         return $this->image;
+       }
+        return null;
     }
 
     public function setImage($image): self

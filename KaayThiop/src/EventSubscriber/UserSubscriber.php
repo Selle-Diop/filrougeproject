@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Burger;
+use App\Entity\Client;
 use App\Entity\Produit;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
